@@ -16,7 +16,8 @@ import br.cefetmg.implicare.model.exception.PersistenceException;
  */
 
 public interface CandidatoManagement {
-    public void insert(Candidato Candidato) throws BusinessException, PersistenceException;
-    public boolean update(long CPF, Candidato Candidato) throws BusinessException, PersistenceException;
+    public boolean insert(Candidato Candidato) throws BusinessException, PersistenceException;
+    public boolean update(Candidato Candidato) throws BusinessException, PersistenceException;
+    public boolean delete(Candidato Candidato) throws BusinessException, PersistenceException;
     public Candidato pesquisar(long CPF) throws PersistenceException;
 }

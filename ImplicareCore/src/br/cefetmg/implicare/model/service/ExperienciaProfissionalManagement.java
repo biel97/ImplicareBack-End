@@ -17,9 +17,8 @@ import java.util.ArrayList;
  */
 
 public interface ExperienciaProfissionalManagement {
-    public void insert(ExperienciaProfissional ExperienciaProfissional) throws BusinessException, PersistenceException;
-    public boolean update(long CPF, int Seq_Experiencia, int Cod_Cargo, ExperienciaProfissional ExperienciaProfssional) throws BusinessException, PersistenceException;
-    public boolean delete(long CPF, int Seq_Experiencia, int Cod_Cargo) throws PersistenceException;
+    public boolean insert(ExperienciaProfissional ExperienciaProfissional) throws BusinessException, PersistenceException;
+    public boolean update(ExperienciaProfissional ExperienciaProfissional) throws BusinessException, PersistenceException;
+    public boolean delete(ExperienciaProfissional ExperienciaProfissional) throws PersistenceException;
     public ArrayList<ExperienciaProfissional> listar(long CPF) throws PersistenceException;
-    public ExperienciaProfissional pesquisar(long CPF, int Seq_Experiencia, int Cod_Cargo) throws PersistenceException;
 }

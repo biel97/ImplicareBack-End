@@ -27,25 +27,20 @@ public class CargoInteresseManagementImpl implements CargoInteresseManagement {
     }
     
     @Override
-    public void insert(CargoInteresse CargoInteresse) throws BusinessException, PersistenceException {
-        CargoInteresseDao.insert(CargoInteresse);
+    public boolean insert(CargoInteresse CargoInteresse) throws BusinessException, PersistenceException {
+        boolean result = CargoInteresseDao.insert(CargoInteresse);
+        return result;
     }
 
     @Override
-    public boolean delete(long CPF, int Cod_Cargo) throws PersistenceException {
-        boolean result = CargoInteresseDao.delete(CPF, Cod_Cargo);
+    public boolean delete(CargoInteresse CargoInteresse) throws PersistenceException {
+        boolean result = CargoInteresseDao.delete(CargoInteresse);
         return result;
     }
 
     @Override
     public ArrayList<CargoInteresse> listar(long CPF) throws PersistenceException {
         ArrayList<CargoInteresse> result = CargoInteresseDao.listar(CPF);
-        return result;
-    }
-
-    @Override
-    public CargoInteresse pesquisar(long CPF, int Cod_Cargo) throws PersistenceException {
-        CargoInteresse result = CargoInteresseDao.pesquisar(CPF, Cod_Cargo);
         return result;
     }
     

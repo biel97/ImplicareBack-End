@@ -11,7 +11,6 @@ import br.cefetmg.implicare.model.domain.CandidatoVaga;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CandidatoVagaManagement;
-import java.sql.Date;
 import java.util.ArrayList;
 
 /**
@@ -28,25 +27,20 @@ public class CandidatoVagaManagementImpl implements CandidatoVagaManagement {
     }
     
     @Override
-    public void insert(CandidatoVaga CandidatoVaga) throws BusinessException, PersistenceException {
-        CandidatoVagaDao.insert(CandidatoVaga);
-    }
-
-    @Override
-    public boolean update(long CPF, int Cod_Cargo, long CNPJ, Date Dat_Publicacao, CandidatoVaga CandidatoVaga) throws BusinessException, PersistenceException {
-        boolean result = CandidatoVagaDao.update(CPF, Cod_Cargo, CNPJ, Dat_Publicacao, CandidatoVaga);
+    public boolean insert(CandidatoVaga CandidatoVaga) throws BusinessException, PersistenceException {
+        boolean result = CandidatoVagaDao.insert(CandidatoVaga);
         return result;
     }
 
     @Override
-    public ArrayList<CandidatoVaga> listar(int Cod_Cargo, long CNPJ, Date Dat_Publicacao) throws PersistenceException {
-        ArrayList<CandidatoVaga> result = CandidatoVagaDao.listar(Cod_Cargo, CNPJ, Dat_Publicacao);
+    public boolean update(CandidatoVaga CandidatoVaga) throws BusinessException, PersistenceException {
+        boolean result = CandidatoVagaDao.update(CandidatoVaga);
         return result;
     }
 
     @Override
-    public CandidatoVaga pesquisar(long CPF, int Cod_Cargo, long CNPJ, Date Dat_Publicacao) throws PersistenceException {
-        CandidatoVaga result = CandidatoVagaDao.pesquisar(CPF, Cod_Cargo, CNPJ, Dat_Publicacao);
+    public ArrayList<CandidatoVaga> listar(int Seq_Vaga) throws PersistenceException {
+        ArrayList<CandidatoVaga> result = CandidatoVagaDao.listar(Seq_Vaga);
         return result;
     }
     

@@ -24,30 +24,7 @@ public class UsuarioManagementImpl implements UsuarioManagement {
     public UsuarioManagementImpl(){
         UsuarioDao = new UsuarioDaoImpl();
     }
-    
-    @Override
-    public void insert(Usuario Usuario) throws BusinessException, PersistenceException {
-        UsuarioDao.insert(Usuario);
-    }
 
-    @Override
-    public boolean update(long CPF_CNPJ, Usuario Usuario) throws BusinessException, PersistenceException {
-        boolean result = UsuarioDao.update(CPF_CNPJ, Usuario);
-        return result;
-    }
-    
-    @Override
-    public boolean delete(long CPF_CNPJ) throws BusinessException, PersistenceException {
-        boolean result = UsuarioDao.delete(CPF_CNPJ);
-        return result;
-    }
-    
-    @Override
-    public Usuario pesquisar(long CPF_CNPJ) throws PersistenceException {
-        Usuario result = UsuarioDao.pesquisar(CPF_CNPJ);
-        return result;
-    }
-    
     @Override
     public Usuario login(long CPF_CNPJ, String Senha) throws PersistenceException{
         Usuario result = UsuarioDao.login(CPF_CNPJ, Senha);

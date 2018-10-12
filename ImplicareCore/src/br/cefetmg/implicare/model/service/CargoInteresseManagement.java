@@ -17,8 +17,7 @@ import java.util.ArrayList;
  */
 
 public interface CargoInteresseManagement {
-    public void insert(CargoInteresse CargoInteresse) throws BusinessException, PersistenceException;
-    public boolean delete(long CPF, int Cod_Cargo) throws PersistenceException;
+    public boolean insert(CargoInteresse CargoInteresse) throws BusinessException, PersistenceException;
+    public boolean delete(CargoInteresse CargoInteresse) throws PersistenceException;
     public ArrayList<CargoInteresse> listar(long CPF) throws PersistenceException;
-    public CargoInteresse pesquisar(long CPF, int Cod_Cargo) throws PersistenceException;
 }

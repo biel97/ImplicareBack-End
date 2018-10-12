@@ -27,31 +27,26 @@ public class FormacaoAcademicaManagementImpl implements FormacaoAcademicaManagem
     }
 
     @Override
-    public void insert(FormacaoAcademica FormacaoAcademica) throws BusinessException, PersistenceException {
-        FormacaoAcademicaDao.insert(FormacaoAcademica);
-    }
-
-    @Override
-    public boolean update(long CPF, int Seq_Formacao, int Cod_Area_Estudo, FormacaoAcademica FormacaoAcademica) throws BusinessException, PersistenceException {
-        boolean result = FormacaoAcademicaDao.update(CPF, Seq_Formacao, Cod_Area_Estudo, FormacaoAcademica);
+    public boolean insert(FormacaoAcademica FormacaoAcademica) throws BusinessException, PersistenceException {
+        boolean result = FormacaoAcademicaDao.insert(FormacaoAcademica);
         return result;
     }
 
     @Override
-    public boolean delete(long CPF, int Seq_Formacao, int Cod_Area_Estudo) throws PersistenceException {
-        boolean result = FormacaoAcademicaDao.delete(CPF, Seq_Formacao, Cod_Area_Estudo);
+    public boolean update(FormacaoAcademica FormacaoAcademica) throws BusinessException, PersistenceException {
+        boolean result = FormacaoAcademicaDao.update(FormacaoAcademica);
+        return result;
+    }
+
+    @Override
+    public boolean delete(FormacaoAcademica FormacaoAcademica) throws PersistenceException {
+        boolean result = FormacaoAcademicaDao.delete(FormacaoAcademica);
         return result;
     }
 
     @Override
     public ArrayList<FormacaoAcademica> listar(long CPF) throws PersistenceException {
         ArrayList<FormacaoAcademica> result = FormacaoAcademicaDao.listar(CPF);
-        return result;
-    }
-
-    @Override
-    public FormacaoAcademica pesquisar(long CPF, int Seq_Formacao, int Cod_Area_Estudo) throws PersistenceException {
-        FormacaoAcademica result = FormacaoAcademicaDao.pesquisar(CPF, Seq_Formacao, Cod_Area_Estudo);
         return result;
     }
     

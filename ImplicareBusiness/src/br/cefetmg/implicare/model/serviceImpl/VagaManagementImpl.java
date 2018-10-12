@@ -11,13 +11,14 @@ import br.cefetmg.implicare.model.domain.Vaga;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.VagaManagement;
-import java.sql.Date;
 import java.util.ArrayList;
 
 /**
  *
  * @author Gabriel
+ * 
  */
+
 public class VagaManagementImpl implements VagaManagement {
     private final VagaDao VagaDao;
     
@@ -26,19 +27,20 @@ public class VagaManagementImpl implements VagaManagement {
     }
 
     @Override
-    public void insert(Vaga Vaga) throws BusinessException, PersistenceException {
-        VagaDao.insert(Vaga);
-    }
-
-    @Override
-    public boolean update(long CNPJ, int Cod_Cargo, Date Dat_Publicacao, Vaga Vaga) throws BusinessException, PersistenceException {
-        boolean result = VagaDao.update(CNPJ, Cod_Cargo, Dat_Publicacao, Vaga);
+    public boolean insert(Vaga Vaga) throws BusinessException, PersistenceException {
+        boolean result = VagaDao.insert(Vaga);
         return result;
     }
 
     @Override
-    public boolean delete(long CNPJ, int Cod_Cargo, Date Dat_Publicacao) throws PersistenceException {
-        boolean result = VagaDao.delete(CNPJ, Cod_Cargo, Dat_Publicacao);
+    public boolean update(Vaga Vaga) throws BusinessException, PersistenceException {
+        boolean result = VagaDao.update(Vaga);
+        return result;
+    }
+
+    @Override
+    public boolean delete(Vaga Vaga) throws PersistenceException {
+        boolean result = VagaDao.delete(Vaga);
         return result;
     }
 
@@ -51,12 +53,6 @@ public class VagaManagementImpl implements VagaManagement {
     @Override
     public ArrayList<Vaga> listarVagaCandidato(long CPF) throws PersistenceException {
         ArrayList<Vaga> result = VagaDao.listarVagaCandidato(CPF);
-        return result;
-    }
-
-    @Override
-    public Vaga pesquisar(long CNPJ, int Cod_Cargo, Date Dat_Publicacao) throws PersistenceException {
-        Vaga result = VagaDao.pesquisar(CNPJ, Cod_Cargo, Dat_Publicacao);
         return result;
     }
     

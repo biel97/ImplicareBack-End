@@ -27,31 +27,26 @@ public class ExperienciaProfissionalManagementImpl implements ExperienciaProfiss
     }
     
     @Override
-    public void insert(ExperienciaProfissional ExperienciaProfissional) throws BusinessException, PersistenceException {
-        ExperienciaProfissionalDao.insert(ExperienciaProfissional);
-    }
-
-    @Override
-    public boolean update(long CPF, int Seq_Experiencia, int Cod_Cargo, ExperienciaProfissional ExperienciaProfssional) throws BusinessException, PersistenceException {
-        boolean result = ExperienciaProfissionalDao.update(CPF, Seq_Experiencia, Cod_Cargo, ExperienciaProfssional);
+    public boolean insert(ExperienciaProfissional ExperienciaProfissional) throws BusinessException, PersistenceException {
+        boolean result = ExperienciaProfissionalDao.insert(ExperienciaProfissional);
         return result;
     }
 
     @Override
-    public boolean delete(long CPF, int Seq_Experiencia, int Cod_Cargo) throws PersistenceException {
-        boolean result = ExperienciaProfissionalDao.delete(CPF, Seq_Experiencia, Cod_Cargo);
+    public boolean update(ExperienciaProfissional ExperienciaProfssional) throws BusinessException, PersistenceException {
+        boolean result = ExperienciaProfissionalDao.update(ExperienciaProfssional);
+        return result;
+    }
+
+    @Override
+    public boolean delete(ExperienciaProfissional ExperienciaProfissional) throws PersistenceException {
+        boolean result = ExperienciaProfissionalDao.delete(ExperienciaProfissional);
         return result;
     }
 
     @Override
     public ArrayList<ExperienciaProfissional> listar(long CPF) throws PersistenceException {
         ArrayList<ExperienciaProfissional> result = ExperienciaProfissionalDao.listar(CPF);
-        return result;
-    }
-
-    @Override
-    public ExperienciaProfissional pesquisar(long CPF, int Seq_Experiencia, int Cod_Cargo) throws PersistenceException {
-        ExperienciaProfissional result = ExperienciaProfissionalDao.pesquisar(CPF, Seq_Experiencia, Cod_Cargo);
         return result;
     }
 

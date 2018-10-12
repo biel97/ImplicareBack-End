@@ -16,7 +16,8 @@ import br.cefetmg.implicare.model.exception.PersistenceException;
  */
 
 public interface EmpresaManagement {
-    public void insert(Empresa Empresa) throws BusinessException, PersistenceException;
-    public boolean update(long CNPJ,Empresa Empresa) throws BusinessException, PersistenceException;
+    public boolean insert(Empresa Empresa) throws BusinessException, PersistenceException;
+    public boolean update(Empresa Empresa) throws BusinessException, PersistenceException;
+    public boolean delete(Empresa Empresa) throws BusinessException, PersistenceException;
     public Empresa pesquisar(long CNPJ) throws PersistenceException;
 }
