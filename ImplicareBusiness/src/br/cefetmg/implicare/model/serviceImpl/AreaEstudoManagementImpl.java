@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class AreaEstudoManagementImpl implements AreaEstudoManagement {
     private final AreaEstudoDao AreaEstudoDao;
     
-    AreaEstudoManagementImpl(){
+    public AreaEstudoManagementImpl(){
         AreaEstudoDao = new AreaEstudoDaoImpl();
     }
     

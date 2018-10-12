@@ -5,8 +5,13 @@
  */
 package br.cefetmg.implicare.servlet;
 
+import br.cefetmg.implicare.model.domain.AreaEstudo;
+import br.cefetmg.implicare.model.exception.PersistenceException;
+import br.cefetmg.implicare.model.service.AreaEstudoManagement;
+import br.cefetmg.implicare.model.serviceImpl.AreaEstudoManagementImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,30 +24,56 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 public class ListarAreaEstudo extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+    private ArrayList<AreaEstudo> ListaAreaEstudo;
+    private AreaEstudoManagement AreaEstudoManagement;
+    private String result;
+    
+    public ListarAreaEstudo() {
+        ListaAreaEstudo = null;
+        result = "";
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        response.setContentType("application/json;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        
+        try {
+            AreaEstudoManagement = new AreaEstudoManagementImpl();
+            ListaAreaEstudo = AreaEstudoManagement.listar();
             
+            if (!ListaAreaEstudo.isEmpty()) {
+                result = "[";
+                for (AreaEstudo AreaEstudo: ListaAreaEstudo) {  
+                    result += "{"
+                            + "\"Cod_Area_Estudo\": " + AreaEstudo.getCod_Area_Estudo()
+                            + ", \"Nom_Area_Estudo\": \"" + AreaEstudo.getNom_Area_Estudo() + "\" },";
+                }
+                int ult = result.lastIndexOf(',');
+                result = result.substring(0, ult);
+                result += "]";
+            
+            }
+            
+            else {
+                result = "[]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+            
+        } catch (PersistenceException ex) {
+            result = ex.getMessage();
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+        
+        PrintWriter out = response.getWriter();
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        out.println(result);
+        
     }
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "List Area Estudo";
     }
 
 }
