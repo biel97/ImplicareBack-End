@@ -13,25 +13,15 @@ import java.sql.Date;
  * 
  */
 
-public class Candidato {
-    private long CPF;
+public class Candidato extends Usuario{
     private String Nome;
     private Date Data_Nascimento;
     
     public Candidato(){}
     
-    public Candidato(long CPF, String Nome, Date Data_Nascimento){
-        this.CPF = CPF;
+    public Candidato(String Nome, Date Data_Nascimento){
         this.Nome = Nome;
         this.Data_Nascimento = Data_Nascimento;
-    }
-    
-    public long getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(long CPF) {
-        this.CPF = CPF;
     }
 
     public String getNome() {

@@ -11,25 +11,15 @@ package br.cefetmg.implicare.model.domain;
  * 
  */
 
-public class Empresa {
-    private long CNPJ;
+public class Empresa extends Usuario{
     private String Nom_Razao_Social;
     private String Nome_Fantasia;
     
     public Empresa(){}
 
-    public Empresa(long CNPJ, String Nom_Razao_Social, String Nome_Fantasia){
-        this.CNPJ = CNPJ;
+    public Empresa(String Nom_Razao_Social, String Nome_Fantasia){
         this.Nom_Razao_Social = Nom_Razao_Social;
         this.Nome_Fantasia = Nome_Fantasia;
-    }
-    
-    public long getCNPJ() {
-        return CNPJ;
-    }
-
-    public void setCNPJ(long CNPJ) {
-        this.CNPJ = CNPJ;
     }
 
     public String getNom_Razao_Social() {
