@@ -60,7 +60,7 @@ public class AlterarTelefone extends HttpServlet {
         
     }
     
-     private Telefone TelefoneFromJson(String str) {
+    private Telefone TelefoneFromJson(String str) {
         Gson = new Gson();
         Telefone Telefone = Gson.fromJson(str, Telefone.class);
         return Telefone;

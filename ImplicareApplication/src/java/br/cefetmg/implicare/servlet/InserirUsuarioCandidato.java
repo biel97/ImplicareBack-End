@@ -5,6 +5,12 @@
  */
 package br.cefetmg.implicare.servlet;
 
+import br.cefetmg.implicare.model.domain.Candidato;
+import br.cefetmg.implicare.model.exception.BusinessException;
+import br.cefetmg.implicare.model.exception.PersistenceException;
+import br.cefetmg.implicare.model.service.CandidatoManagement;
+import br.cefetmg.implicare.model.serviceImpl.CandidatoManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -19,30 +25,50 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 public class InserirUsuarioCandidato extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+    private CandidatoManagement CandidatoManagement;
+    private String result;
+    private ServletUtil Util;
+    private Gson Gson;
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        try {
+            Util = new ServletUtil();
+            String payload = Util.getJson(request);
+            Candidato Candidato = this.CandidatoFromJson(payload);
+            CandidatoManagement = new CandidatoManagementImpl();
             
+            CandidatoManagement.insert(Candidato);
+            
+            response.setStatus(HttpServletResponse.SC_OK);
+            
+        } catch (BusinessException | PersistenceException e) {
+            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
         }
-    }
+        
+        finally{
+            if(result != null){
+                PrintWriter writer = response.getWriter();
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+            }
+        }
+        
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    
+    private Candidato CandidatoFromJson(String str) {
+        Gson = new Gson();
+        Candidato Candidato = Gson.fromJson(str, Candidato.class);
+        return Candidato;
     }
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Update Usuario Candidato";
     }
-
+    
 }
