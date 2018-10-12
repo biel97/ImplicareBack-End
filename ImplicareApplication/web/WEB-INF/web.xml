@@ -164,6 +164,10 @@
         <servlet-name>ListarVagaCandidato</servlet-name>
         <servlet-class>br.cefetmg.implicare.servlet.ListarVagaCandidato</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServletUtil</servlet-name>
+        <servlet-class>br.cefetmg.implicare.servlet.ServletUtil</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListarAreaEstudo</servlet-name>
         <url-pattern>/ListarAreaEstudo</url-pattern>
@@ -327,6 +331,10 @@
     <servlet-mapping>
         <servlet-name>ListarVagaCandidato</servlet-name>
         <url-pattern>/ListarVagaCandidato</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletUtil</servlet-name>
+        <url-pattern>/ServletUtil</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
