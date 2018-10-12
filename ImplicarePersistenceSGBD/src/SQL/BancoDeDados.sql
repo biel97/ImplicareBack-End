@@ -118,7 +118,7 @@ CREATE TABLE "Empresa"(
  "CNPJ" Bigint NOT NULL,
  "Nom_Razao_Social" Character varying NOT NULL,
  "Nome_Fantasia" Character varying NOT NULL
-)
+)INHERITS (Usuario)
 ;
 
 -- Add keys for table Empresa
@@ -126,25 +126,25 @@ CREATE TABLE "Empresa"(
 ALTER TABLE "Empresa" ADD CONSTRAINT "Key11" PRIMARY KEY ("CNPJ")
 ;
 
--- Table Usuario
+-- Table Candidato
 
-CREATE TABLE "Usuario"(
+CREATE TABLE "Candidato"(
  "CPF" Bigint NOT NULL,
  "Nome" Character varying NOT NULL,
  "Data_Nascimento" Date NOT NULL
-)
+)INHERITS (Usuario)
 ;
 
--- Add keys for table Usuario
+-- Add keys for table Candidato
 
-ALTER TABLE "Pessoa_Fisica" ADD CONSTRAINT "Key13" PRIMARY KEY ("CPF")
+ALTER TABLE "Candidato" ADD CONSTRAINT "Key13" PRIMARY KEY ("CPF")
 ;
 
 -- Table Formacao_Academica
 
 CREATE TABLE "Formacao_Academica"(
  "CPF" Bigint NOT NULL,
- "seq_formacao" Smallint NOT NULL,
+ "Seq_Formacao" Serial NOT NULL,
  "Instituicao_Ensino" Character varying NOT NULL,
  "Cod_Area_Estudo" Integer,
  "Atividades_Desenvolvidas" Character varying,
@@ -161,41 +161,33 @@ CREATE INDEX "IX_Relationship20" ON "Formacao_Academica" ("Cod_Area_Estudo")
 
 -- Add keys for table Formacao_Academica
 
-ALTER TABLE "Formacao_Academica" ADD CONSTRAINT "Key16" PRIMARY KEY ("CPF","seq_formacao")
+ALTER TABLE "Formacao_Academica" ADD CONSTRAINT "Key16" PRIMARY KEY ("CPF","Seq_Formacao")
 ;
 
 -- Table Experiencia_Profissional
 
 CREATE TABLE "Experiencia_Profissional"(
  "CPF" Bigint NOT NULL,
+ "Seq_Experiencia_Profissional" Serial NOT NULL,
  "Nom_Empresa" Character varying NOT NULL,
  "Cod_Cargo" Integer NOT NULL,
- "Cod_CEP" Bigint,
  "Data_Inicio" Date NOT NULL,
  "Data_Termino" Date,
- "Desc_Experiencia_Profissional" Character varying,
- "Cod_Cidade" Integer,
- "Cod_Estado" Integer
+ "Desc_Experiencia_Profissional" Character varying
 )
 ;
 
--- Create indexes for table Experiencia_Profissional
-
-CREATE INDEX "IX_Relationship24" ON "Experiencia_Profissional" ("Cod_CEP")
-;
-
-CREATE INDEX "IX_Relationship45" ON "Experiencia_Profissional" ("Cod_Cidade","Cod_Estado")
-;
 
 -- Add keys for table Experiencia_Profissional
 
-ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Key17" PRIMARY KEY ("CPF","Cod_Cargo")
+ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Key17" PRIMARY KEY ("CPF", "Seq_Expeiencia_Profissional", "Cod_Cargo")
 ;
 
 -- Table Telefone
 
 CREATE TABLE "Telefone"(
  "CPF_CNPJ" Bigint NOT NULL,
+ "Seq_Telefone" Serial NOT NULL,
  "Num_Telefone" Character(9) NOT NULL,
  "Tipo_Telefone" Character(1) NOT NULL,
  "DDD" Bit(2) NOT NULL,
@@ -205,7 +197,7 @@ CREATE TABLE "Telefone"(
 
 -- Add keys for table Telefone
 
-ALTER TABLE "Telefone" ADD CONSTRAINT "Key19" PRIMARY KEY ("CPF_CNPJ","Num_Telefone")
+ALTER TABLE "Telefone" ADD CONSTRAINT "Key19" PRIMARY KEY ("CPF_CNPJ", "Seq_Telefone", "Num_Telefone")
 ;
 
 -- Table Cargo_Interesse
@@ -225,38 +217,43 @@ ALTER TABLE "Cargo_Interesse" ADD CONSTRAINT "Key21" PRIMARY KEY ("Cod_Cargo","C
 
 CREATE TABLE "Vaga"(
  "CNPJ" Bigint NOT NULL,
+ "Seq_Vaga" Serial NOT NULL,
  "Cod_Cargo" Integer NOT NULL,
- "dat_publicacao" Bigint NOT NULL,
+ "Dat_Publicacao" Bigint NOT NULL,
  "Num_Vagas" Integer,
  "Carga_Horaria" Bigint NOT NULL,
  "Remuneração" Money,
  "Desc_Vaga" Character varying,
  "Status_Vaga" Bit(1) NOT NULL
+ CONSTRAINT Check_Status CHECK (Status_Vaga == '1'::Bit(1) OR Status_Vaga == '2'::Bit(1))
 )
+;
+COMMENT ON COLUMN Vaga.Status_Vaga IS '0 - Aberta; 1 - Fechada;'
 ;
 
 -- Add keys for table Vaga
 
-ALTER TABLE "Vaga" ADD CONSTRAINT "Key23" PRIMARY KEY ("Cod_Cargo","CNPJ","dat_publicacao")
+ALTER TABLE "Vaga" ADD CONSTRAINT "Key23" PRIMARY KEY ("Cod_Cargo", "Seq_Vaga", "CNPJ", "Dat_Publicacao") ON DELETE CASCADE ON UPDATE CASCADE
 ;
 
 -- Table Candidato_Vaga
 
 CREATE TABLE "Candidato_Vaga"(
  "CPF" Bigint NOT NULL,
+ "Seq_Vaga" Serial NOT NULL,
  "Cod_Cargo" Integer NOT NULL,
  "CNPJ" Bigint NOT NULL,
  "dat_publicacao" Bigint NOT NULL,
  "Status_Candidato" Character(1) NOT NULL
+ CONSTRAINT Check_Status CHECK (Status_Candidato == 'A'::Character(1) OR Status_Candidato == 'R'::Character(1) OR Status_Candidato == 'E'::Character(1))
 )
 ;
-COMMENT ON COLUMN "Candidato_Vaga"."Status_Candidato" IS 'A aceito
-R '
+COMMENT ON COLUMN Candidato_Vaga.Status_Candidato IS 'A - Aceito; R - Rejeitado; E - em Espera;'
 ;
 
 -- Add keys for table Candidato_Vaga
 
-ALTER TABLE "Candidato_Vaga" ADD CONSTRAINT "Key24" PRIMARY KEY ("CPF","Cod_Cargo","CNPJ","Attribute1")
+ALTER TABLE "Candidato_Vaga" ADD CONSTRAINT "Key24" PRIMARY KEY ("CPF", "Seq_Vaga", "Cod_Cargo", "CNPJ", "Dat_Publicacao")
 ;
 
 -- Table Cargo_areaestudo
@@ -288,19 +285,16 @@ ALTER TABLE "Empresa" ADD CONSTRAINT "Relationship6" FOREIGN KEY ("CNPJ") REFERE
 ALTER TABLE "Candidato" ADD CONSTRAINT "Relationship9" FOREIGN KEY ("CPF") REFERENCES "Usuario" ("CPF_CNPJ") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "Formacao_Academica" ADD CONSTRAINT "Relationship19" FOREIGN KEY ("CPF") REFERENCES "Pessoa_Fisica" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "Formacao_Academica" ADD CONSTRAINT "Relationship19" FOREIGN KEY ("CPF") REFERENCES "Candidato" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "Formacao_Academica" ADD CONSTRAINT "Relationship20" FOREIGN KEY ("Cod_Area_Estudo") REFERENCES "Area_Estudo" ("Cod_Area_Estudo") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Relationship21" FOREIGN KEY ("CPF") REFERENCES "Pessoa_Fisica" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Relationship21" FOREIGN KEY ("CPF") REFERENCES "Candidato" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Relationship22" FOREIGN KEY ("Cod_Cargo") REFERENCES "Cargo" ("Cod_Cargo") ON DELETE NO ACTION ON UPDATE NO ACTION
-;
-
-ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Relationship24" FOREIGN KEY ("Cod_CEP") REFERENCES "CEP" ("Cod_CEP") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "Telefone" ADD CONSTRAINT "Relationship28" FOREIGN KEY ("CPF_CNPJ") REFERENCES "Usuario" ("CPF_CNPJ") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -309,19 +303,16 @@ ALTER TABLE "Telefone" ADD CONSTRAINT "Relationship28" FOREIGN KEY ("CPF_CNPJ") 
 ALTER TABLE "Cargo_Interesse" ADD CONSTRAINT "Relationship33" FOREIGN KEY ("Cod_Cargo") REFERENCES "Cargo" ("Cod_Cargo") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "Cargo_Interesse" ADD CONSTRAINT "Relationship34" FOREIGN KEY ("CPF") REFERENCES "Pessoa_Fisica" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "Cargo_Interesse" ADD CONSTRAINT "Relationship34" FOREIGN KEY ("CPF") REFERENCES "Candidato" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "Vaga" ADD CONSTRAINT "Relationship39" FOREIGN KEY ("Cod_Cargo") REFERENCES "Cargo" ("Cod_Cargo") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "Vaga" ADD CONSTRAINT "Relationship39" FOREIGN KEY ("Cod_Cargo") REFERENCES "Cargo" ("Cod_Cargo") ON DELETE CASCADE ON UPDATE CASCADE
 ;
 
-ALTER TABLE "Candidato_Vaga" ADD CONSTRAINT "Relationship42" FOREIGN KEY ("CPF") REFERENCES "Pessoa_Fisica" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "Candidato_Vaga" ADD CONSTRAINT "Relationship42" FOREIGN KEY ("CPF") REFERENCES "Candidato" ("CPF") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "Candidato_Vaga" ADD CONSTRAINT "Relationship43" FOREIGN KEY ("Cod_Cargo", "CNPJ", "Attribute1") REFERENCES "Vaga" ("Cod_Cargo", "CNPJ", "dat_publicacao") ON DELETE NO ACTION ON UPDATE NO ACTION
-;
-
-ALTER TABLE "Experiencia_Profissional" ADD CONSTRAINT "Relationship45" FOREIGN KEY ("Cod_Cidade", "Cod_Estado") REFERENCES "Cidade" ("Cod_Cidade", "Cod_Estado") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "Candidato_Vaga" ADD CONSTRAINT "Relationship43" FOREIGN KEY ("Cod_Cargo", "Seq_Vaga", "CNPJ", "Dat_Publicacao") REFERENCES "Vaga" ("Cod_Cargo", "Seq_Vaga", "CNPJ", "Dat_Publicacao") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "Vaga" ADD CONSTRAINT "Relationship46" FOREIGN KEY ("CNPJ") REFERENCES "Empresa" ("CNPJ") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -332,4 +323,3 @@ ALTER TABLE "Cargo_areaestudo" ADD CONSTRAINT "Relationship48" FOREIGN KEY ("Cod
 
 ALTER TABLE "Cargo_areaestudo" ADD CONSTRAINT "Relationship49" FOREIGN KEY ("Cod_Cargo") REFERENCES "Cargo" ("Cod_Cargo") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
-
