@@ -31,6 +31,7 @@ public class CargoDaoImpl implements CargoDao{
             String sql = "SELECT * FROM Cargo ORDER BY Nom_Cargo;";
 
             PreparedStatement ps = connection.prepareStatement(sql);
+            
             ResultSet rs = ps.executeQuery();
 
             ArrayList<Cargo> lista = new ArrayList<>();

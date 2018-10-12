@@ -16,9 +16,8 @@ import java.util.ArrayList;
  */
 
 public interface FormacaoAcademicaDao {
-    public void insert(FormacaoAcademica FormacaoAcademica) throws PersistenceException;
-    public boolean update(long CPF, int Seq_Formacao, int Cod_Area_Estudo, FormacaoAcademica FormacaoAcademica) throws PersistenceException;
-    public boolean delete(long CPF, int Seq_Formacao, int Cod_Area_Estudo) throws PersistenceException;
+    public boolean insert(FormacaoAcademica FormacaoAcademica) throws PersistenceException;
+    public boolean update(FormacaoAcademica FormacaoAcademica) throws PersistenceException;
+    public boolean delete(FormacaoAcademica FormacaoAcademica) throws PersistenceException;
     public ArrayList<FormacaoAcademica> listar(long CPF) throws PersistenceException;
-    public FormacaoAcademica pesquisar(long CPF, int Seq_Formacao, int Cod_Area_Estudo) throws PersistenceException;
 }

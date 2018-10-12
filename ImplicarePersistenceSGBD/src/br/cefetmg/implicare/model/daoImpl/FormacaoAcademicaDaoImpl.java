@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
 
     @Override
-    public void insert(FormacaoAcademica FormacaoAcademica) throws PersistenceException {
+    public boolean insert(FormacaoAcademica FormacaoAcademica) throws PersistenceException {
         try {
                     
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
@@ -49,21 +49,24 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
             rs.close();
             ps.close();
             connection.close();
+            
+            return true;
 
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println(ex.toString());
+            return false;
         }
     }
 
     @Override
-    public boolean update(long CPF, int Seq_Formacao, int Cod_Area_Estudo, FormacaoAcademica FormacaoAcademica) throws PersistenceException {
+    public boolean update(FormacaoAcademica FormacaoAcademica) throws PersistenceException {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
             String SQL = "UPDATE FormacaoAcademica SET Seq_Formacao = ?, Instituicao_Ensino = ?, "
                     + "Cod_Area_Estudo = ? , Atividades_Desenvolvidas = ?, Data_Inicio = ?, "
                     + "Data_Termino = ?, Desc_Formacao_Academica = ?"
-                    + "WHERE CPF = ?, Seq_Formacao = ?, Cod_Area_Estudo = ?";
+                    + "WHERE Seq_Formacao = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
 
@@ -74,9 +77,7 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
             ps.setDate(5, FormacaoAcademica.getData_Inicio());
             ps.setDate(6, FormacaoAcademica.getData_Termino());
             ps.setString(7, FormacaoAcademica.getDesc_Formacao_Academica());
-            ps.setLong(8, CPF);
-            ps.setInt(9, Seq_Formacao);
-            ps.setInt(10, Cod_Area_Estudo);
+            ps.setInt(8, FormacaoAcademica.getSeq_Formacao());
             
             ps.executeQuery(SQL);
             ps.close();
@@ -90,18 +91,15 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
     }
 
     @Override
-    public boolean delete(long CPF, int Seq_Formacao, int Cod_Area_Estudo) throws PersistenceException {
+    public boolean delete(FormacaoAcademica FormacaoAcademica) throws PersistenceException {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "DELETE FROM FormacaoAcademica"
-                    + "WHERE CPF = ?, Seq_Formacao = ?, Cod_Area_Estudo = ?";
+            String SQL = "DELETE FROM FormacaoAcademica WHERE Seq_Formacao = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
             
-            ps.setLong(1, CPF);
-            ps.setInt(2, Seq_Formacao);
-            ps.setInt(3, Cod_Area_Estudo);
+            ps.setInt(1, FormacaoAcademica.getSeq_Formacao());
             
             ps.executeQuery(SQL);
             ps.close();
@@ -147,45 +145,6 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
 
             return lista;
             
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println(ex.toString());
-            return null;
-        }
-    }
-
-    @Override
-    public FormacaoAcademica pesquisar(long CPF, int Seq_Formacao, int Cod_Area_Estudo) throws PersistenceException {
-        try {
-            Connection connection = JDBCConnectionManager.getInstance().getConnection();
-
-            String sql = "SELECT * FROM FormacaoAcademica WHERE CPF = ?, Seq_Formacao = ?, Cod_Area_Estudo = ?";
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-            
-            ps.setLong(1, CPF);
-            ps.setInt(2, Seq_Formacao);
-            ps.setInt(3, Cod_Area_Estudo);
-            
-            ResultSet rs = ps.executeQuery();
-
-           FormacaoAcademica Acad = new FormacaoAcademica();
-            
-            if (rs.next()) {
-                Acad.setCPF(rs.getLong("CPF"));
-                Acad.setSeq_Formacao(rs.getInt("Seq_Formacao"));
-                Acad.setInstituicao_Ensino(rs.getString("Instituicao_Ensino"));
-                Acad.setCod_Area_Estudo(rs.getInt("Cod_Area_Estudo"));
-                Acad.setAtividades_Desenvolvidas(rs.getString("Atividades_Desenvolvidas"));
-                Acad.setData_Inicio(rs.getDate("Data_Inicio"));
-                Acad.setData_Termino(rs.getDate("Data_Termino"));
-                Acad.setDesc_Formacao_Academica(rs.getString("Desc_Formacao_Academica"));
-            }
-
-            rs.close();
-            ps.close();
-            connection.close();
-
-            return Acad;
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println(ex.toString());
             return null;

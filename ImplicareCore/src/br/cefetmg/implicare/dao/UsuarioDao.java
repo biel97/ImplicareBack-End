@@ -15,9 +15,9 @@ import br.cefetmg.implicare.model.exception.PersistenceException;
  */
 
 public interface UsuarioDao {
-    public void insert(Usuario Usuario) throws PersistenceException;
-    public boolean update(long CPF_CNPJ, Usuario Usuario) throws PersistenceException;
-    public boolean delete(long CPF_CNPJ) throws PersistenceException;
+    public boolean insert(Usuario Usuario) throws PersistenceException;
+    public boolean update(Usuario Usuario) throws PersistenceException;
+    public boolean delete(Usuario Usuario) throws PersistenceException;
     public Usuario pesquisar(long CPF_CNPJ) throws PersistenceException;
     public Usuario login(long CPF_CNPJ, String Senha) throws PersistenceException;
 }

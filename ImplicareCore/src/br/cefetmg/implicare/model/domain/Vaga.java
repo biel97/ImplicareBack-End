@@ -15,6 +15,7 @@ import java.sql.Date;
 
 public class Vaga {
     private long CNPJ;
+    private int Seq_Vaga;
     private int Cod_Cargo;
     private Date Dat_Publicacao;
     private int Num_Vagas;
@@ -25,8 +26,9 @@ public class Vaga {
     
     public Vaga(){}
     
-    public Vaga(long CNPJ, int Cod_Cargo, Date Dat_Publicacao, int Num_Vagas, int Carga_Horaria, double Remuneracao, String Desc_Vaga, int Status_Vaga){
+    public Vaga(long CNPJ, int Seq_Vaga, int Cod_Cargo, Date Dat_Publicacao, int Num_Vagas, int Carga_Horaria, double Remuneracao, String Desc_Vaga, int Status_Vaga){
         this.CNPJ = CNPJ;
+        this.Seq_Vaga = Seq_Vaga;
         this.Cod_Cargo = Cod_Cargo;
         this.Dat_Publicacao = Dat_Publicacao;
         this.Num_Vagas = Num_Vagas;
@@ -43,7 +45,15 @@ public class Vaga {
     public void setCNPJ(long CNPJ) {
         this.CNPJ = CNPJ;
     }
+    
+     public int getSeq_Vaga() {
+        return Seq_Vaga;
+    }
 
+    public void setSeq_Vaga(int Seq_Vaga) {
+        this.Seq_Vaga = Seq_Vaga;
+    }
+    
     public int getCod_Cargo() {
         return Cod_Cargo;
     }

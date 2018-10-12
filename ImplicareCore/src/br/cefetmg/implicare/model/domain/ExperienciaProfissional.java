@@ -18,25 +18,20 @@ public class ExperienciaProfissional {
     private int Seq_Experiencia;
     private String Nom_Empresa;
     private int Cod_Cargo;
-    private long Cod_CEP;
     private Date Data_Inicio;
     private Date Data_Termino;
     private String Desc_Experiencia_Profissional;
-    private long Cod_Cidade;
-    private long Cod_Estado;
 
     public ExperienciaProfissional(){}
     
-    public ExperienciaProfissional(long CPF, int Seq_Experiencia, String Nom_Empresa, int Cod_Cargo, long Cod_Cep, Date Data_Inicio, Date Data_Termino, String Desc_Experiencia_Profissional, long Cod_Cidade, long Cod_Estado){
+    public ExperienciaProfissional(long CPF, int Seq_Experiencia, String Nom_Empresa, int Cod_Cargo, Date Data_Inicio, Date Data_Termino, String Desc_Experiencia_Profissional){
         this.CPF = CPF;
-        this.Seq_Experiencia=Seq_Experiencia;
+        this.Seq_Experiencia = Seq_Experiencia;
         this.Nom_Empresa = Nom_Empresa;
         this.Cod_Cargo= Cod_Cargo;
         this.Data_Inicio = Data_Inicio;
         this.Data_Termino = Data_Termino;
         this.Desc_Experiencia_Profissional = Desc_Experiencia_Profissional;
-        this.Cod_Cidade = Cod_Cidade;
-        this.Cod_Estado = Cod_Estado;
     }
     
     public long getCPF() {
@@ -71,14 +66,6 @@ public class ExperienciaProfissional {
         this.Cod_Cargo = Cod_Cargo;
     }
 
-    public long getCod_CEP() {
-        return Cod_CEP;
-    }
-
-    public void setCod_CEP(long Cod_CEP) {
-        this.Cod_CEP = Cod_CEP;
-    }
-
     public Date getData_Inicio() {
         return Data_Inicio;
     }
@@ -101,22 +88,6 @@ public class ExperienciaProfissional {
 
     public void setDesc_Experiencia_Profissional(String Desc_Experiencia_Profissional) {
         this.Desc_Experiencia_Profissional = Desc_Experiencia_Profissional;
-    }
-
-    public long getCod_Cidade() {
-        return Cod_Cidade;
-    }
-
-    public void setCod_Cidade(long Cod_Cidade) {
-        this.Cod_Cidade = Cod_Cidade;
-    }
-
-    public long getCod_Estado() {
-        return Cod_Estado;
-    }
-
-    public void setCod_Estado(long Cod_Estado) {
-        this.Cod_Estado = Cod_Estado;
     }
     
 }

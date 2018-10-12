@@ -15,6 +15,7 @@ import java.sql.Date;
 
 public class CandidatoVaga {
     private long CPF;
+    private int Seq_Vaga;
     private int Cod_Cargo;
     private long CNPJ;
     private Date Dat_Publicacao;
@@ -22,8 +23,9 @@ public class CandidatoVaga {
     
     public CandidatoVaga(){}
 
-    public CandidatoVaga(long CPF, int Cod_Cargo, long CNPJ, Date Dat_Publicacao, String Status_Candidato){
+    public CandidatoVaga(long CPF, int Seq_Vaga, int Cod_Cargo, long CNPJ, Date Dat_Publicacao, String Status_Candidato){
         this.CPF = CPF;
+        this.Seq_Vaga = Seq_Vaga;
         this.Cod_Cargo = Cod_Cargo;
         this.CNPJ = CNPJ;
         this.Dat_Publicacao = Dat_Publicacao;
@@ -37,7 +39,15 @@ public class CandidatoVaga {
     public void setCPF(long CPF) {
         this.CPF = CPF;
     }
+    
+     public int getSeq_Vaga() {
+        return Seq_Vaga;
+    }
 
+    public void setSeq_Vaga(int Seq_Vaga) {
+        this.Seq_Vaga = Seq_Vaga;
+    }
+    
     public int getCod_Cargo() {
         return Cod_Cargo;
     }

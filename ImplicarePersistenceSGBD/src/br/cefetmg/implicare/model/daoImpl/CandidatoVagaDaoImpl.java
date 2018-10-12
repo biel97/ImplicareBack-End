@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
 
     @Override
-    public void insert(CandidatoVaga CandidatoVaga) throws PersistenceException {
+    public boolean insert(CandidatoVaga CandidatoVaga) throws PersistenceException {
         try {
                     
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
@@ -46,28 +46,27 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
             rs.close();
             ps.close();
             connection.close();
+            return true;
 
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println(ex.toString());
+            return false;
         }
     }
 
     @Override
-    public boolean update(long CPF, int Cod_Cargo, long CNPJ, Date Dat_Publicacao, CandidatoVaga CandidatoVaga) throws PersistenceException {
+    public boolean update(CandidatoVaga CandidatoVaga) throws PersistenceException {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
             String SQL = "UPDATE CandidatoVaga SET Status_Candidato = ? "
-                    + "WHERE CPF = ? , Cod_Cargo = ?,"
-                    + "CNPJ = ?, Dat_Publicacao = ?";
+                    + "WHERE CPF = ? , Seq_Vaga = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
             
             ps.setString(1, CandidatoVaga.getStatus_Candidato());
-            ps.setLong(2, CPF);
-            ps.setInt(3, Cod_Cargo);
-            ps.setLong(4, CNPJ);
-            ps.setDate(5, Dat_Publicacao);
+            ps.setLong(2, CandidatoVaga.getCPF());
+            ps.setInt(3, CandidatoVaga.getSeq_Vaga());
             
             ps.executeQuery(SQL);
             ps.close();
@@ -81,18 +80,16 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
     }
 
     @Override
-   public ArrayList<CandidatoVaga> listar(int Cod_Cargo, long CNPJ, Date Dat_Publicacao) throws PersistenceException {
+   public ArrayList<CandidatoVaga> listar(int Seq_Vaga) throws PersistenceException {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
             String SQL = "SELECT * FROM CandidatoVaga"
-                    + "WHERE Cod_Cargo = ?, CNPJ = ?, Dat_Publicacao = ?";
+                    + "WHERE Seq_Vaga = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
             
-            ps.setInt(1, Cod_Cargo);
-            ps.setLong(2, CNPJ);
-            ps.setDate(3, Dat_Publicacao);
+            ps.setInt(1, Seq_Vaga);
             
             ResultSet rs = ps.executeQuery(SQL);
             
@@ -101,6 +98,7 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
             
             while (rs.next()) {
                 Cand.setCPF(rs.getLong("CPF"));
+                Cand.setSeq_Vaga(rs.getInt("Seq_Vaga"));
                 Cand.setCod_Cargo(rs.getInt("Cod_Cargo"));
                 Cand.setCNPJ(rs.getLong("CNPJ"));
                 Cand.setDat_Publicacao(rs.getDate("Dat_Publicacao"));
@@ -115,42 +113,6 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
             return lista; 
            
         } catch (Exception ex) {
-            System.out.println(ex.toString());
-            return null;
-        }
-    }
-
-    @Override
-    public CandidatoVaga pesquisar(long CPF, int Cod_Cargo, long CNPJ, Date Dat_Publicacao) throws PersistenceException {
-        try {
-           Connection connection = JDBCConnectionManager.getInstance().getConnection();
-
-            String sql = "SELECT * FROM CandidatoVaga WHERE CPF = ?, Cod_Cargo = ?, CNPJ = ?, Dat_Publicacao = ?";
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setLong(1, CPF);
-            ps.setInt(2, Cod_Cargo);
-            ps.setLong(3, CNPJ);
-            ps.setDate(4, Dat_Publicacao);
-            ResultSet rs = ps.executeQuery();
-
-            CandidatoVaga Cand = new CandidatoVaga();
-            
-            if (rs.next()) {
-                Cand.setCPF(rs.getLong("CPF"));
-                Cand.setCod_Cargo(rs.getInt("Cod_Cargo"));
-                Cand.setCNPJ(rs.getLong("CNPJ"));
-                Cand.setDat_Publicacao(rs.getDate("Dat_Publicacao"));
-                Cand.setStatus_Candidato(rs.getString("Status_Candidato"));
-            }
-
-            rs.close();
-            ps.close();
-            connection.close();
-
-            return Cand;
-            
-        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println(ex.toString());
             return null;
         }

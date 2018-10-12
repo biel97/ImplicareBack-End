@@ -14,16 +14,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Gabriel
+ * 
  */
 public class TelefoneDaoImpl implements TelefoneDao{
    
     @Override
-    public void insert(Telefone Telefone) throws PersistenceException{
+    public boolean insert(Telefone Telefone) throws PersistenceException{
         try {
                     
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
@@ -44,19 +44,22 @@ public class TelefoneDaoImpl implements TelefoneDao{
             rs.close();
             ps.close();
             connection.close();
+            
+            return true;
 
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println(ex.toString());
+            return false;
         }
     }
     
     @Override
-    public boolean update(long CPF_CNPJ, String Num_Telefone, Telefone Telefone) throws PersistenceException{
+    public boolean update(Telefone Telefone) throws PersistenceException{
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
             String SQL = "UPDATE Telefone SET Num_Telefone = ?, Tipo_Telefone = ?, DDD = ?, Ramal = ? "
-                    + "WHERE CPF_CNPJ = ?, Num_Telefone = ?";
+                    + "WHERE Seq_Telefone = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
             
@@ -64,8 +67,7 @@ public class TelefoneDaoImpl implements TelefoneDao{
             ps.setString(2, Telefone.getTipo_Telefone());
             ps.setInt(3, Telefone.getDDD());
             ps.setInt(4, Telefone.getRamal());
-            ps.setLong(5, CPF_CNPJ);
-            ps.setString(6, Num_Telefone);
+            ps.setInt(5, Telefone.getSeq_Telefone());
             
             ps.executeQuery(SQL);
             ps.close();
@@ -80,17 +82,15 @@ public class TelefoneDaoImpl implements TelefoneDao{
     }
     
     @Override
-    public boolean delete(long CPF_CNPJ, String Num_Telefone) throws PersistenceException{
+    public boolean delete(Telefone Telefone) throws PersistenceException{
         try {
            Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "DELETE FROM Telefone"
-                    + "WHERE CPF_CNPJ = ?, Num_Telfone = ?";
+            String SQL = "DELETE FROM Telefone WHERE Seq_Telefone = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
             
-            ps.setLong(1, CPF_CNPJ);
-            ps.setString(2, Num_Telefone);
+            ps.setInt(1, Telefone.getSeq_Telefone());
             
             ps.executeQuery(SQL);
             ps.close();
@@ -122,6 +122,7 @@ public class TelefoneDaoImpl implements TelefoneDao{
             while (rs.next()) {
                 Telefone Tel = new Telefone();
                 Tel.setCPF_CNPJ(rs.getLong("CPF_CNPJ"));
+                Tel.setSeq_Telefone(rs.getInt("Seq_Telefone"));
                 Tel.setNum_Telefone(rs.getString("Num-Telefone"));
                 Tel.setTipo_Telefone(rs.getString("Tipo_Telfone"));
                 Tel.setDDD(rs.getInt("DDD"));
@@ -136,41 +137,6 @@ public class TelefoneDaoImpl implements TelefoneDao{
             return lista;
             
         } catch (Exception ex) {
-            System.out.println(ex.toString());
-            return null;
-        }
-    }
-
-    @Override
-    public Telefone pesquisar(long CPF_CNPJ, String Num_Telefone) throws PersistenceException {
-        try {
-            Connection connection = JDBCConnectionManager.getInstance().getConnection();
-
-            String sql = "SELECT * FROM Telefone WHERE CPF_CNPJ = ?, Num_Telefone = ?";
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-            
-            ps.setLong(1, CPF_CNPJ);
-            ps.setString(2, Num_Telefone);
-            
-            ResultSet rs = ps.executeQuery();
-
-            Telefone Tel = new Telefone();
-            
-            if (rs.next()) {
-                Tel.setCPF_CNPJ(rs.getLong("CPF_CNPJ"));
-                Tel.setNum_Telefone(rs.getString("Num-Telefone"));
-                Tel.setTipo_Telefone(rs.getString("Tipo_Telfone"));
-                Tel.setDDD(rs.getInt("DDD"));
-                Tel.setRamal(rs.getInt("Ramal"));
-            }
-
-            rs.close();
-            ps.close();
-            connection.close();
-
-            return Tel;
-        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println(ex.toString());
             return null;
         }
