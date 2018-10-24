@@ -180,7 +180,7 @@ CREATE TABLE Experiencia_Profissional(
 
 -- Add keys for table Experiencia_Profissional
 
-ALTER TABLE Experiencia_Profissional ADD CONSTRAINT Key17 PRIMARY KEY (CPF, Seq_Expeiencia_Profissional, Cod_Cargo)
+ALTER TABLE Experiencia_Profissional ADD CONSTRAINT Key17 PRIMARY KEY (CPF, Seq_Experiencia_Profissional, Cod_Cargo)
 ;
 
 -- Table Telefone
@@ -225,7 +225,7 @@ CREATE TABLE Vaga(
  Remuneração Money,
  Desc_Vaga Character varying,
  Status_Vaga Bit(1) NOT NULL
- CONSTRAINT Check_Status CHECK (Status_Vaga == '1'::Bit(1) OR Status_Vaga == '2'::Bit(1))
+ CONSTRAINT Check_Status CHECK (Status_Vaga = '0'::Bit(1) OR Status_Vaga = '1'::Bit(1))
 )
 ;
 COMMENT ON COLUMN Vaga.Status_Vaga IS '0 - Aberta; 1 - Fechada;'
@@ -233,7 +233,7 @@ COMMENT ON COLUMN Vaga.Status_Vaga IS '0 - Aberta; 1 - Fechada;'
 
 -- Add keys for table Vaga
 
-ALTER TABLE Vaga ADD CONSTRAINT Key23 PRIMARY KEY (Cod_Cargo, Seq_Vaga, CNPJ, Dat_Publicacao) ON DELETE CASCADE ON UPDATE CASCADE
+ALTER TABLE Vaga ADD CONSTRAINT Key23 PRIMARY KEY (Cod_Cargo, Seq_Vaga, CNPJ, Dat_Publicacao) 
 ;
 
 -- Table Candidato_Vaga
@@ -243,9 +243,9 @@ CREATE TABLE Candidato_Vaga(
  Seq_Vaga Serial NOT NULL,
  Cod_Cargo Integer NOT NULL,
  CNPJ Bigint NOT NULL,
- dat_publicacao Bigint NOT NULL,
+ Dat_Publicacao Bigint NOT NULL,
  Status_Candidato Character(1) NOT NULL
- CONSTRAINT Check_Status CHECK (Status_Candidato == 'A'::Character(1) OR Status_Candidato == 'R'::Character(1) OR Status_Candidato == 'E'::Character(1))
+ CONSTRAINT Check_Status CHECK (Status_Candidato = 'A'::Character(1) OR Status_Candidato = 'R'::Character(1) OR Status_Candidato = 'E'::Character(1))
 )
 ;
 COMMENT ON COLUMN Candidato_Vaga.Status_Candidato IS 'A - Aceito; R - Rejeitado; E - em Espera;'
