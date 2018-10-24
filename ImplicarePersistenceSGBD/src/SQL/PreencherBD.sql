@@ -97,7 +97,7 @@ INSERT INTO Cargo (Cod_Cargo, Nom_Cargo) VALUES
 (84, 'Zelador')
 ;
 
-INSERT INTO AreaEstudo (Cod_Area_Estudo, Nom_Area_Estudo) VALUES
+INSERT INTO Area_Estudo (Cod_Area_Estudo, Nom_Area_Estudo) VALUES
 (0, 'Ensino Fundamental'),
 (1, 'Ensino Médio'),
 (2, 'Técnico em Meio Ambiente'),
@@ -151,7 +151,7 @@ INSERT INTO AreaEstudo (Cod_Area_Estudo, Nom_Area_Estudo) VALUES
 (54, 'Farmácia')
 ;
 
-INSERT INTO Cargo_Area_Estudo(Cod_Area_Estudo, Cod_Cargo) VALUES
+INSERT INTO Cargo_AreaEstudo(Cod_Area_Estudo, Cod_Cargo) VALUES
 (0, 4),
 (0, 5),
 (0, 9),
@@ -331,7 +331,6 @@ INSERT INTO Cargo_Area_Estudo(Cod_Area_Estudo, Cod_Cargo) VALUES
 (28, 43),
 (28, 58),
 (28, 63),
-(29, 28),
 (29, 28),
 (30, 17),
 (30, 20),
@@ -6033,7 +6032,7 @@ INSERT INTO Cidade (Cod_Cidade, Nom_Cidade, Cod_Estado) VALUES
 (5564, 'Xambioá', 27)
 ;
 
-INSERT INTO Empresa (CPF_CNPJ, Email, Senha, Foto, Cod_CEP, Endereco, Desc_Usuario, Nom_Razao_Social, Nom_Fantasia) VALUES
+INSERT INTO Empresa (CPF_CNPJ, Email, Senha, Foto, Cod_CEP, Endereco, Desc_Usuario, Nom_Razao_Social, Nome_Fantasia) VALUES
 (12189917699, 'positivo@positivo.com', '21ad84adv3a', NULL, 31310960, 'Av. Amazonas', 'Empresa de Tecnologia & Eletronicos', 'Positivo', 'Positivo'),
 (18986913678, 'Lg@LG.com', 'hndfuimG', NULL, 31290756, 'Av. São Paulo', 'Empresa de Tecnologia & Eletronicos', 'LG', 'LG'),
 (19289916798, 'Hostel@gmail.com', 'hjdfiufdgng', NULL, 39209760, 'Av. Contorno', 'Empresa Hoteleira', 'Hostel', 'Hostel'),
