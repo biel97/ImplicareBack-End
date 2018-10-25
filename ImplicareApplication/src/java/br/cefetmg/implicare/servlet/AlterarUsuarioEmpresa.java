@@ -13,6 +13,8 @@ import br.cefetmg.implicare.model.serviceImpl.EmpresaManagementImpl;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,36 +28,36 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AlterarUsuarioEmpresa extends HttpServlet {
     private EmpresaManagement EmpresaManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+    
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            Empresa Empresa = this.EmpresaFromJson(payload);
-            EmpresaManagement = new EmpresaManagementImpl();
-            
-            EmpresaManagement.update(Empresa);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (BusinessException | PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            EmpresaManagement = new EmpresaManagementImpl();
+            Empresa Empresa = this.EmpresaFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(EmpresaManagement.update(Empresa));
+            
+        } catch (BusinessException | PersistenceException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(AlterarUsuarioEmpresa.class.getName()).log(Level.SEVERE, null, ex);
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }

@@ -1,1 +1,9 @@
 /ImplicareApplication/nbproject/private/
+/ImplicareCore/build/
+/ImplicarePersistenceSGBD/build
+/ImplicareBusiness/build/
+/ImplicareCore/dist/
+/ImplicarePersistenceSGBD/dist/
+/ImplicareBusiness/dist/
+/ImplicareApplication/build/
+/ImplicareApplication/dist/

@@ -13,6 +13,8 @@ import br.cefetmg.implicare.model.serviceImpl.VagaManagementImpl;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AlterarVaga extends HttpServlet {
     private VagaManagement VagaManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
@@ -37,25 +38,26 @@ public class AlterarVaga extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            Vaga Vaga = this.VagaFromJson(payload);
-            VagaManagement = new VagaManagementImpl();
-            
-            VagaManagement.update(Vaga);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (BusinessException | PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            VagaManagement = new VagaManagementImpl();
+            Vaga Vaga = this.VagaFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(VagaManagement.update(Vaga));
+            
+        } catch (BusinessException | PersistenceException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(AlterarVaga.class.getName()).log(Level.SEVERE, null, ex);
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }

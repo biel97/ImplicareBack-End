@@ -13,6 +13,8 @@ import br.cefetmg.implicare.model.serviceImpl.TelefoneManagementImpl;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AlterarTelefone extends HttpServlet {
     private TelefoneManagement TelefoneManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
@@ -37,25 +38,26 @@ public class AlterarTelefone extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            Telefone Telefone = this.TelefoneFromJson(payload);
-            TelefoneManagement = new TelefoneManagementImpl();
-            
-            TelefoneManagement.update(Telefone);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (BusinessException | PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            TelefoneManagement = new TelefoneManagementImpl();
+            Telefone Telefone = this.TelefoneFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(TelefoneManagement.update(Telefone));
+            
+        } catch (BusinessException | PersistenceException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(AlterarTelefone.class.getName()).log(Level.SEVERE, null, ex);
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }
