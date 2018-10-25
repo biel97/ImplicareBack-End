@@ -6,7 +6,6 @@
 package br.cefetmg.implicare.servlet;
 
 import br.cefetmg.implicare.model.domain.Telefone;
-import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.TelefoneManagement;
 import br.cefetmg.implicare.model.serviceImpl.TelefoneManagementImpl;
@@ -26,36 +25,34 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ExcluirTelefone extends HttpServlet {
     private TelefoneManagement TelefoneManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+    
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            Telefone Telefone = this.TelefoneFromJson(payload);
-            TelefoneManagement = new TelefoneManagementImpl();
-            
-            TelefoneManagement.delete(Telefone);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            TelefoneManagement = new TelefoneManagementImpl();
+            Telefone Telefone = this.TelefoneFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(TelefoneManagement.delete(Telefone));
+            
+        } catch (PersistenceException ex) {
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }

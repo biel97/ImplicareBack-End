@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ExcluirExperienciaProfissional extends HttpServlet {
     private ExperienciaProfissionalManagement ExperienciaProfissionalManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
    
@@ -36,25 +35,24 @@ public class ExcluirExperienciaProfissional extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            ExperienciaProfissional ExperienciaProfissional = this.ExperienciaProfissionalFromJson(payload);
-            ExperienciaProfissionalManagement = new ExperienciaProfissionalManagementImpl();
-            
-            ExperienciaProfissionalManagement.delete(ExperienciaProfissional);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            ExperienciaProfissionalManagement = new ExperienciaProfissionalManagementImpl();
+            ExperienciaProfissional ExperienciaProfissional = this.ExperienciaProfissionalFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(ExperienciaProfissionalManagement.delete(ExperienciaProfissional));
+            
+        } catch (PersistenceException ex) {
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }

@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ExcluirVaga extends HttpServlet {
     private VagaManagement VagaManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
@@ -36,25 +35,24 @@ public class ExcluirVaga extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            Vaga Vaga = this.VagaFromJson(payload);
-            VagaManagement = new VagaManagementImpl();
-            
-            VagaManagement.delete(Vaga);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            VagaManagement = new VagaManagementImpl();
+            Vaga Vaga = this.VagaFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(VagaManagement.delete(Vaga));
+            
+        } catch (PersistenceException ex) {
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }

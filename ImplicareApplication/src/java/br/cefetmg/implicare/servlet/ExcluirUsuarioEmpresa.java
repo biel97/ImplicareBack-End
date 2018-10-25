@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ExcluirUsuarioEmpresa extends HttpServlet {
     private EmpresaManagement EmpresaManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
@@ -37,27 +36,26 @@ public class ExcluirUsuarioEmpresa extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
+        
         try {
-            Util = new ServletUtil();
             String payload = Util.getJson(request);
-            Empresa Empresa = this.EmpresaFromJson(payload);
+            
             EmpresaManagement = new EmpresaManagementImpl();
+            Empresa Empresa = this.EmpresaFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(EmpresaManagement.delete(Empresa));
             
-            EmpresaManagement.delete(Empresa);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (BusinessException | PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
+        } catch (BusinessException | PersistenceException ex) {
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
-        }
-    
     }
     
     private Empresa EmpresaFromJson(String str) {
