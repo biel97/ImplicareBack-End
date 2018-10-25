@@ -13,6 +13,8 @@ import br.cefetmg.implicare.model.serviceImpl.CargoInteresseManagementImpl;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class InserirCargoInteresse extends HttpServlet {
     private CargoInteresseManagement CargoInteresseManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
@@ -37,25 +38,26 @@ public class InserirCargoInteresse extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            CargoInteresse CargoInteresse = this.CargoInteresseFromJson(payload);
-            CargoInteresseManagement = new CargoInteresseManagementImpl();
-            
-            CargoInteresseManagement.insert(CargoInteresse);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (BusinessException | PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            CargoInteresseManagement = new CargoInteresseManagementImpl();
+            CargoInteresse CargoInteresse = this.CargoInteresseFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(CargoInteresseManagement.insert(CargoInteresse));
+            
+        } catch (BusinessException | PersistenceException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(InserirCargoInteresse.class.getName()).log(Level.SEVERE, null, ex);
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }

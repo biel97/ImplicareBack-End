@@ -13,6 +13,8 @@ import br.cefetmg.implicare.model.serviceImpl.FormacaoAcademicaManagementImpl;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,9 +25,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel
  * 
  */
+
 public class InserirFormacaoAcademica extends HttpServlet {
     private FormacaoAcademicaManagement FormacaoAcademicaManagement;
-    private String result;
     private ServletUtil Util;
     private Gson Gson;
     
@@ -36,25 +38,26 @@ public class InserirFormacaoAcademica extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
         
-        try {
-            Util = new ServletUtil();
-            String payload = Util.getJson(request);
-            FormacaoAcademica FormacaoAcademica = this.FormacaoAcademicaFromJson(payload);
-            FormacaoAcademicaManagement = new FormacaoAcademicaManagementImpl();
-            
-            FormacaoAcademicaManagement.insert(FormacaoAcademica);
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            
-        } catch (BusinessException | PersistenceException e) {
-            response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-        }
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
-        finally{
-            if(result != null){
-                PrintWriter writer = response.getWriter();
-
-            }
+        try {
+            String payload = Util.getJson(request);
+            
+            FormacaoAcademicaManagement = new FormacaoAcademicaManagementImpl();
+            FormacaoAcademica FormacaoAcademica = this.FormacaoAcademicaFromJson(payload);
+            Result.setStatusOK();
+            Result.setContent(FormacaoAcademicaManagement.insert(FormacaoAcademica));
+            
+        } catch (BusinessException | PersistenceException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(InserirFormacaoAcademica.class.getName()).log(Level.SEVERE, null, ex);
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
         
     }
