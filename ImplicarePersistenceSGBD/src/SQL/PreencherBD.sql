@@ -6032,12 +6032,20 @@ INSERT INTO Cidade (Cod_Cidade, Nom_Cidade, Cod_Estado) VALUES
 (5564, 'Xambioá', 27)
 ;
 
-INSERT INTO Empresa (CPF_CNPJ, Email, Senha, Foto, Cod_CEP, Endereco, Desc_Usuario, Nom_Razao_Social, Nome_Fantasia) VALUES
-(12189917699, 'positivo@positivo.com', '21ad84adv3a', NULL, 31310960, 'Av. Amazonas', 'Empresa de Tecnologia & Eletronicos', 'Positivo', 'Positivo'),
-(18986913678, 'Lg@LG.com', 'hndfuimG', NULL, 31290756, 'Av. São Paulo', 'Empresa de Tecnologia & Eletronicos', 'LG', 'LG'),
-(19289916798, 'Hostel@gmail.com', 'hjdfiufdgng', NULL, 39209760, 'Av. Contorno', 'Empresa Hoteleira', 'Hostel', 'Hostel'),
-(89213819628, 'Betsona@hotmail.com', 'giduhgdgngdsg', NULL, 38210980, 'Av. Rio de Janeiro', 'Empresa Farmacêutica', 'Betsona', 'Betsona'),
-(25889918652, 'philco@philco.com', '189359521hb', NULL, 36250836, 'Av. Brasil', 'Empresa de Tecnologia & Eletronicos', 'Philco', 'Philco')
+INSERT INTO Usuario (CPF_CNPJ, Email, Senha, Foto, Cod_CEP, Endereco, Desc_Usuario, Nom_Razao_Social, Nome_Fantasia) VALUES
+(12189917699, 'positivo@positivo.com', '21ad84adv3a', NULL, 31310960, 'Av. Amazonas', 'Empresa de Tecnologia & Eletronicos'),
+(18986913678, 'Lg@LG.com', 'hndfuimG', NULL, 31290756, 'Av. São Paulo', 'Empresa de Tecnologia & Eletronicos'),
+(19289916798, 'Hostel@gmail.com', 'hjdfiufdgng', NULL, 39209760, 'Av. Contorno', 'Empresa Hoteleira'),
+(89213819628, 'Betsona@hotmail.com', 'giduhgdgngdsg', NULL, 38210980, 'Av. Rio de Janeiro', 'Empresa Farmacêutica'),
+(25889918652, 'philco@philco.com', '189359521hb', NULL, 36250836, 'Av. Brasil', 'Empresa de Tecnologia & Eletronicos')
+;
+
+INSERT INTO Empresa (CNPJ, Nom_Razao_Social, Nome_Fantasia) VALUES
+(12189917699, 'Positivo', 'Positivo'),
+(18986913678, 'LG', 'LG'),
+(19289916798, 'Hostel', 'Hostel'),
+(89213819628, 'Betsona', 'Betsona'),
+(25889918652, 'Philco', 'Philco')
 ;
 
 INSERT INTO Telefone(CPF_CNPJ, Seq_Telefone, Num_Telefone, Tipo_Telefone, DDD, Ramal) VALUES
