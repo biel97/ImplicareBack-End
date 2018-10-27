@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.Cargo;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CargoManagement;
 import br.cefetmg.implicare.model.serviceImpl.CargoManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -25,47 +26,42 @@ import javax.servlet.http.HttpServletResponse;
 public class PesquisarCargo extends HttpServlet {
     private Cargo Cargo;
     private CargoManagement CargoManagement;
-    private String result;
-    
-    public PesquisarCargo() {
-        Cargo= null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         int Cod_Cargo = Integer.parseInt(request.getParameter("Cod_Cargo"));
         
         try {
+            
             CargoManagement = new CargoManagementImpl();
+            Cargo = new Cargo();
             Cargo = CargoManagement.pesquisar(Cod_Cargo);
             
-            if (Cargo != null) {
-                result = "[ {"
-                        + "\"Cod_Area_Estudo\": " + Cargo.getCod_Cargo()
-                        + ", \"Nom_Area_Estudo\": \"" + Cargo.getNom_Cargo() + "\" },";
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            if(Cargo == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(Cargo);
             }
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 

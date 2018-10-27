@@ -6,9 +6,11 @@
 package br.cefetmg.implicare.servlet;
 
 import br.cefetmg.implicare.model.domain.Candidato;
+import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CandidatoManagement;
 import br.cefetmg.implicare.model.serviceImpl.CandidatoManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -25,54 +27,42 @@ import javax.servlet.http.HttpServletResponse;
 public class PesquisarUsuarioCandidato extends HttpServlet {
     private Candidato Candidato;
     private CandidatoManagement CandidatoManagement;
-    private String result;
-    
-    public PesquisarUsuarioCandidato() {
-        Candidato = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         long CPF = Long.parseLong(request.getParameter("CPF"));
         
         try {
+            
             CandidatoManagement = new CandidatoManagementImpl();
+            Candidato = new Candidato();
             Candidato = CandidatoManagement.pesquisar(CPF);
             
-            if (Candidato != null) {
-                result = "[ {"
-                        + "\"CPF\": " + Candidato.getCPF_CNPJ()
-                        + ", \"Email\": \"" + Candidato.getEmail() + "\""
-                        + ", \"Foto\": \"" + Candidato.getFoto() + "\""
-                        + ", \"Cod_Cep\": \"" + Candidato.getCod_CEP() + "\""
-                        + ", \"Endereco\": \"" + Candidato.getEndereco() + "\""
-                        + ", \"Desc_Usuario\": \"" + Candidato.getDesc_Usuario() + "\""
-                        + ", \"Nome\": \"" + Candidato.getNome() + "\""
-                        + ", \"Data_Nascimento\": \"" + Candidato.getData_Nascimento() + "\"},";
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
+            if(Candidato == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(CandidatoManagement.insert(Candidato));
             }
             
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
-            
-        } catch (PersistenceException ex) {
-            result = ex.getMessage();
+        } catch (BusinessException | PersistenceException ex) {
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
-        
     }
 
     @Override
