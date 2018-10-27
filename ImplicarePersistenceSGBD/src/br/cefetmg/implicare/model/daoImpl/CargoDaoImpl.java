@@ -65,9 +65,9 @@ public class CargoDaoImpl implements CargoDao{
             ArrayList<Cargo> lista = new ArrayList<>();
             
             String sql = "SELECT * FROM Cargo A"
-                    + "JOIN CargoAreaEstudo B ON "
+                    + "JOIN Cargo_AreaEstudo B ON "
                     + "A.Cod_Cargo = B.Cod_Cargo"
-                    + "JOIN FormacaoAcademica C"
+                    + "JOIN Formacao_Academica C"
                     + "B.Cod_Area_Estudo = C.Cod_Area_Estudo"
                     + "WHERE C.CPF = ?";
                 

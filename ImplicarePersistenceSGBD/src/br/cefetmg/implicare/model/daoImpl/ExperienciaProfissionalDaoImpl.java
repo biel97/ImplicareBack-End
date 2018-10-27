@@ -29,7 +29,7 @@ public class ExperienciaProfissionalDaoImpl implements ExperienciaProfissionalDa
                     
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "INSERT INTO ExperienciaProfissional (CPF, Seq_Experiencia, Nom_Empresa, Cod_Cargo, "
+            String sql = "INSERT INTO Experiencia_Profissional (CPF, Seq_Experiencia, Nom_Empresa, Cod_Cargo, "
                     + "Data_Inicio, Data_Termino, Desc_Experiencia_Profissional) "
                     + "VALUES(?,?,?,?,?,?,?)";
 
@@ -62,7 +62,7 @@ public class ExperienciaProfissionalDaoImpl implements ExperienciaProfissionalDa
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "UPDATE ExperienciaProfissional SET Nom_Empresa = ?, Cod_Cargo = ?, "
+            String SQL = "UPDATE Experiencia_Profissional SET Nom_Empresa = ?, Cod_Cargo = ?, "
                     + "Data_Inicio = ?, Data_Termino = ?, Desc_Experiencia_Profissional = ?"
                     + "WHERE Seq_Experiencia = ?";
             
@@ -91,7 +91,7 @@ public class ExperienciaProfissionalDaoImpl implements ExperienciaProfissionalDa
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "DELETE FROM ExperienciaProfissional"
+            String SQL = "DELETE FROM Experiencia_Profissional"
                     + "WHERE Seq_Experiencia = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
@@ -113,7 +113,7 @@ public class ExperienciaProfissionalDaoImpl implements ExperienciaProfissionalDa
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "SELECT * FROM ExperienciaProfissional WHERE CPF = ? ORDER BY Seq_Experiencia;";
+            String sql = "SELECT * FROM Experiencia_Profissional WHERE CPF = ? ORDER BY Seq_Experiencia;";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setLong(1, CPF);

@@ -28,7 +28,7 @@ public class AreaEstudoDaoImpl implements AreaEstudoDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "SELECT * FROM AreaEstudo ORDER BY Nom_Area_Estudo;";
+            String sql = "SELECT * FROM Area_Estudo ORDER BY Nom_Area_Estudo;";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -60,7 +60,7 @@ public class AreaEstudoDaoImpl implements AreaEstudoDao {
         try {
            Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "SELECT * FROM AreaEstudo WHERE Cod_Area_Estudo = ?";
+            String sql = "SELECT * FROM Area_Estudo WHERE Cod_Area_Estudo = ?";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, Cod_Area_Estudo);

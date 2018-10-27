@@ -162,7 +162,7 @@ public class VagaDaoImpl implements VagaDao{
             ArrayList<Vaga> lista = new ArrayList<>();
             
             String sql = "SELECT * FROM Vaga A "
-                    + "JOIN CargoInteresse B ON"
+                    + "JOIN Cargo_Interesse B ON"
                     + "A.Cod_Cargo = B.Cod_Cargo"
                     + "WHERE B.CPF = ? ORDER BY A.Cod_Cargo, A.Dat_Publicacao";
 

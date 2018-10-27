@@ -29,7 +29,7 @@ public class CargoInteresseDaoImpl implements CargoInteresseDao {
             
            Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "INSERT INTO CargoInteresse (CPF, Cod_Cargo) VALUES(?,?)";
+            String sql = "INSERT INTO Cargo_Interesse (CPF, Cod_Cargo) VALUES(?,?)";
 
             PreparedStatement ps = connection.prepareStatement(sql);
            
@@ -55,7 +55,7 @@ public class CargoInteresseDaoImpl implements CargoInteresseDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "DELETE FROM CargoInteresse"
+            String SQL = "DELETE FROM Cargo_Interesse"
                     + "WHERE CPF = ?, Cod_Cargo = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
@@ -79,7 +79,7 @@ public class CargoInteresseDaoImpl implements CargoInteresseDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "SELECT * FROM CargoInteresse WHERE CPF = ? ORDER BY Cod_Cargo";
+            String sql = "SELECT * FROM Cargo_Interesse WHERE CPF = ? ORDER BY Cod_Cargo";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setLong(1, CPF);

@@ -29,7 +29,7 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
                     
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "INSERT INTO FormacaoAcademica (CPF, Seq_Formacao, Instituicao_Ensino, Cod_Area_Estudo,"
+            String sql = "INSERT INTO Formacao_Academica (CPF, Seq_Formacao, Instituicao_Ensino, Cod_Area_Estudo,"
                     + "Atividades_Desenvolvidas, Data_Inicio, Data_Termino, Desc_Formacao_Academica) "
                     + "VALUES(?,?,?,?,?,?,?,?)";
 
@@ -63,7 +63,7 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "UPDATE FormacaoAcademica SET Seq_Formacao = ?, Instituicao_Ensino = ?, "
+            String SQL = "UPDATE Formacao_Academica SET Seq_Formacao = ?, Instituicao_Ensino = ?, "
                     + "Cod_Area_Estudo = ? , Atividades_Desenvolvidas = ?, Data_Inicio = ?, "
                     + "Data_Termino = ?, Desc_Formacao_Academica = ?"
                     + "WHERE Seq_Formacao = ?";
@@ -95,7 +95,7 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "DELETE FROM FormacaoAcademica WHERE Seq_Formacao = ?";
+            String SQL = "DELETE FROM Formacao_Academica WHERE Seq_Formacao = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
             
@@ -116,7 +116,7 @@ public class FormacaoAcademicaDaoImpl implements FormacaoAcademicaDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "SELECT * FROM FormacaoAcademica WHERE CPF = ? ORDER BY Seq_Formacao;";
+            String sql = "SELECT * FROM Formacao_Academica WHERE CPF = ? ORDER BY Seq_Formacao;";
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setLong(1, CPF);

@@ -10,7 +10,6 @@ import br.cefetmg.implicare.model.domain.CandidatoVaga;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.inf.util.db.JDBCConnectionManager;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
                     
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
 
-            String sql = "INSERT INTO CandidatoVaga (CPF, Cod_Cargo, CNPJ,"
+            String sql = "INSERT INTO Candidato_Vaga (CPF, Cod_Cargo, CNPJ,"
                     + "Dat_Publicacao, Status_Candidato) VALUES(?,?,?,?,?)";
 
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -59,7 +58,7 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "UPDATE CandidatoVaga SET Status_Candidato = ? "
+            String SQL = "UPDATE Candidato_Vaga SET Status_Candidato = ? "
                     + "WHERE CPF = ? , Seq_Vaga = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
@@ -84,7 +83,7 @@ public class CandidatoVagaDaoImpl implements CandidatoVagaDao {
         try {
             Connection connection = JDBCConnectionManager.getInstance().getConnection();
             
-            String SQL = "SELECT * FROM CandidatoVaga"
+            String SQL = "SELECT * FROM Candidato_Vaga"
                     + "WHERE Seq_Vaga = ?";
             
             PreparedStatement ps = connection.prepareStatement(SQL);
