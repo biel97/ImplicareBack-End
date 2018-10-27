@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.CandidatoVaga;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CandidatoVagaManagement;
 import br.cefetmg.implicare.model.serviceImpl.CandidatoVagaManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,54 +27,41 @@ import javax.servlet.http.HttpServletResponse;
 public class ListarCandidatoVaga extends HttpServlet {
     private ArrayList<CandidatoVaga> ListaCandidatoVaga;
     private CandidatoVagaManagement CandidatoVagaManagement;
-    private String result;
-    
-    public ListarCandidatoVaga() {
-        ListaCandidatoVaga = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
         
         int Seq_Vaga = Integer.parseInt(request.getParameter("Seq_Vaga"));
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         try {
+            
             CandidatoVagaManagement = new CandidatoVagaManagementImpl();
+            ListaCandidatoVaga = new ArrayList();
             ListaCandidatoVaga = CandidatoVagaManagement.listar(Seq_Vaga);
             
-            if (!ListaCandidatoVaga.isEmpty()) {
-                result = "[";
-                for (CandidatoVaga CandidatoVaga: ListaCandidatoVaga) {  
-                    result += "{"
-                            + "\"CPF\": " + CandidatoVaga.getCPF()
-                            + ", \"Seq_Vaga\": \"" + CandidatoVaga + "\""
-                            + ", \"Cod_Cargo\": \"" + CandidatoVaga.getCod_Cargo() + "\""
-                            + ", \"CNPJ\": \"" + CandidatoVaga.getCNPJ() + "\""
-                            + ", \"Dat_Publicacao\": \"" + CandidatoVaga.getDat_Publicacao() + "\""
-                            + ", \"Status_Candidato\": \"" + CandidatoVaga.getStatus_Candidato() + "\" },";
-                }
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            if(ListaCandidatoVaga == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(ListaCandidatoVaga);
             }
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 

@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.AreaEstudo;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.AreaEstudoManagement;
 import br.cefetmg.implicare.model.serviceImpl.AreaEstudoManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,48 +27,36 @@ import javax.servlet.http.HttpServletResponse;
 public class ListarAreaEstudo extends HttpServlet {
     private ArrayList<AreaEstudo> ListaAreaEstudo;
     private AreaEstudoManagement AreaEstudoManagement;
-    private String result;
-    
-    public ListarAreaEstudo() {
-        ListaAreaEstudo = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         try {
+            
             AreaEstudoManagement = new AreaEstudoManagementImpl();
+            ListaAreaEstudo = new ArrayList();
             ListaAreaEstudo = AreaEstudoManagement.listar();
             
-            if (!ListaAreaEstudo.isEmpty()) {
-                result = "[";
-                for (AreaEstudo AreaEstudo: ListaAreaEstudo) {  
-                    result += "{"
-                            + "\"Cod_Area_Estudo\": " + AreaEstudo.getCod_Area_Estudo()
-                            + ", \"Nom_Area_Estudo\": \"" + AreaEstudo.getNom_Area_Estudo() + "\" },";
-                }
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
+            Result.setStatusOK();
+            Result.setContent(ListaAreaEstudo);
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 

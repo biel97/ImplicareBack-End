@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.ExperienciaProfissional;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.ExperienciaProfissionalManagement;
 import br.cefetmg.implicare.model.serviceImpl.ExperienciaProfissionalManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,56 +27,42 @@ import javax.servlet.http.HttpServletResponse;
 public class ListarExperienciaProfissional extends HttpServlet {
     private ArrayList<ExperienciaProfissional> ListaExperienciaProfissional;
     private ExperienciaProfissionalManagement ExperienciaProfissionalManagement;
-    private String result;
-    
-    public ListarExperienciaProfissional() {
-        ListaExperienciaProfissional = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         long CPF = Long.parseLong(request.getParameter("CPF"));
         
         try {
+            
             ExperienciaProfissionalManagement = new ExperienciaProfissionalManagementImpl();
+            ListaExperienciaProfissional = new ArrayList();
             ListaExperienciaProfissional = ExperienciaProfissionalManagement.listar(CPF);
             
-            if (!ListaExperienciaProfissional.isEmpty()) {
-                result = "[";
-                for (ExperienciaProfissional ExperienciaProfissional: ListaExperienciaProfissional) {  
-                    result += "{"
-                            + "\"CPF\": " + ExperienciaProfissional.getCPF()
-                            + ", \"Seq_Experiencia\": \"" + ExperienciaProfissional.getSeq_Experiencia() + "\" "
-                            + ", \"Nom_Empresa\": \"" + ExperienciaProfissional.getNom_Empresa() + "\" "
-                            + ", \"Cod_Cargo\": \"" + ExperienciaProfissional.getCod_Cargo() + "\""
-                            + ", \"Data_Inicio\": \"" + ExperienciaProfissional.getData_Inicio() + "\""
-                            + ", \"Data_Termino\": \"" + ExperienciaProfissional.getData_Termino() + "\""
-                            + ", \"Desc_Experiencia_Profissional\": \"" + 
-                            ExperienciaProfissional.getDesc_Experiencia_Profissional() + "\"},";
-                }
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            if (ListaExperienciaProfissional == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(ListaExperienciaProfissional);
             }
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 

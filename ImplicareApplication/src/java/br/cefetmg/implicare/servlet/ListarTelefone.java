@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.Telefone;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.TelefoneManagement;
 import br.cefetmg.implicare.model.serviceImpl.TelefoneManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,54 +27,42 @@ import javax.servlet.http.HttpServletResponse;
 public class ListarTelefone extends HttpServlet {
     private ArrayList<Telefone> ListaTelefone;
     private TelefoneManagement TelefoneManagement;
-    private String result;
-    
-    public ListarTelefone() {
-        ListaTelefone = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         long CPF_CNPJ = Long.parseLong(request.getParameter("CPF_CNPJ"));
         
         try {
+            
             TelefoneManagement = new TelefoneManagementImpl();
+            ListaTelefone = new ArrayList();
             ListaTelefone = TelefoneManagement.listar(CPF_CNPJ);
             
-            if (!ListaTelefone.isEmpty()) {
-                result = "[";
-                for (Telefone Telefone: ListaTelefone) {  
-                    result += "{"
-                            + "\"CPF_CNPJ\": " + Telefone.getCPF_CNPJ()
-                            + ", \"Seq_Telefone\": \"" + Telefone.getSeq_Telefone() + "\""
-                            + ", \"Num_Telefone\": \"" + Telefone.getNum_Telefone() + "\""
-                            + ", \"Tipo_Telefone\": \"" + Telefone.getTipo_Telefone() + "\""
-                            + ", \"DDD\": \"" + Telefone.getDDD() + "\""
-                            + ", \"Ramal\": \"" + Telefone.getRamal() + "\"},";
-                }
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            if(ListaTelefone == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(ListaTelefone);
             }
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 

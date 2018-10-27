@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.Vaga;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.VagaManagement;
 import br.cefetmg.implicare.model.serviceImpl.VagaManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,57 +27,42 @@ import javax.servlet.http.HttpServletResponse;
 public class ListarVagaEmpresa extends HttpServlet {
     private ArrayList<Vaga> ListaVaga;
     private VagaManagement VagaManagement;
-    private String result;
-    
-    public ListarVagaEmpresa() {
-        ListaVaga = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         long CNPJ = Long.parseLong(request.getParameter("CNPJ"));
         
         try {
+            
             VagaManagement = new VagaManagementImpl();
-            ListaVaga = VagaManagement.listarVagaCandidato(CNPJ);
+            ListaVaga = new ArrayList();
+            ListaVaga = VagaManagement.listarVagaEmpresa(CNPJ);
             
-            if (!ListaVaga.isEmpty()) {
-                result = "[";
-                for (Vaga Vaga: ListaVaga) {  
-                    result += "{"
-                            + "\"CNPJ\": " + Vaga.getCNPJ()
-                            + ", \"Seq_Vaga\": \"" + Vaga.getSeq_Vaga() + "\""
-                            + ", \"Cod_Cargo\": \"" + Vaga.getCod_Cargo() + "\""
-                            + ", \"Dat_Publicacao\": \"" + Vaga.getDat_Publicacao() + "\""
-                            + ", \"Num_Vagas\": \"" + Vaga.getNum_Vagas() + "\""
-                            + ", \"Carga_Horaria\": \"" + Vaga.getCarga_Horaria() + "\""
-                            + ", \"Remuneracao\": \"" + Vaga.getRemuneracao() + "\""
-                            + ", \"Desc_Vaga\": \"" + Vaga.getDesc_Vaga() + "\""
-                            + ", \"Status_Vaga\": \"" + Vaga.getStatus_Vaga() + "\"},";
-                }
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            if(ListaVaga == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(ListaVaga);
             }
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 

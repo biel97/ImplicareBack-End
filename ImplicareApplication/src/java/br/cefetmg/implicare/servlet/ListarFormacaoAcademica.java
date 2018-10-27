@@ -9,6 +9,7 @@ import br.cefetmg.implicare.model.domain.FormacaoAcademica;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.FormacaoAcademicaManagement;
 import br.cefetmg.implicare.model.serviceImpl.FormacaoAcademicaManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,57 +27,43 @@ import javax.servlet.http.HttpServletResponse;
 public class ListarFormacaoAcademica extends HttpServlet {
     private ArrayList<FormacaoAcademica> ListaFormacaoAcademica;
     private FormacaoAcademicaManagement FormacaoAcademicaManagement;
-    private String result;
-    
-    public ListarFormacaoAcademica() {
-        ListaFormacaoAcademica = null;
-        result = "";
-    }
+    private ServletUtil Util;
+    private Gson Gson;
+        
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
         
         long CPF = Long.parseLong(request.getParameter("CPF"));
         
         try {
+            
             FormacaoAcademicaManagement = new FormacaoAcademicaManagementImpl();
+            ListaFormacaoAcademica = new ArrayList();
             ListaFormacaoAcademica = FormacaoAcademicaManagement.listar(CPF);
             
-            if (!ListaFormacaoAcademica.isEmpty()) {
-                result = "[";
-                for (FormacaoAcademica FormacaoAcademica: ListaFormacaoAcademica) {  
-                    result += "{"
-                            + "\"CPF\": " + FormacaoAcademica.getCPF()
-                            + ", \"Seq_Formacao\": \"" + FormacaoAcademica.getSeq_Formacao() + "\" "
-                            + ", \"Instituicao_Ensino\": \"" + FormacaoAcademica.getInstituicao_Ensino() + "\""
-                            + ", \"Cod_Area_Estudo\": \"" + FormacaoAcademica.getCod_Area_Estudo() + "\""
-                            + ", \"Atividades_Desenvolvidas\": \"" + FormacaoAcademica.getAtividades_Desenvolvidas() + "\""
-                            + ", \"Data_Inicio\": \"" + FormacaoAcademica.getData_Inicio() + "\""
-                            + ", \"Data_Termino\": \"" + FormacaoAcademica.getData_Termino() + "\""
-                            + ", \"Desc_Formacao_Academica\": \"" + 
-                            FormacaoAcademica.getDesc_Formacao_Academica() + "\"},";
-                }
-                int ult = result.lastIndexOf(',');
-                result = result.substring(0, ult);
-                result += "]";
-            
-            }
-            
-            else {
-                result = "[]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            if(ListaFormacaoAcademica == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(ListaFormacaoAcademica);
             }
             
         } catch (PersistenceException ex) {
-            result = ex.getMessage();
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-        
-        PrintWriter out = response.getWriter();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        out.println(result);
         
     }
 
