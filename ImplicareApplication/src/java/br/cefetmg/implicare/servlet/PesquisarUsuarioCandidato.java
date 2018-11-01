@@ -53,10 +53,10 @@ public class PesquisarUsuarioCandidato extends HttpServlet {
                 Result.setStatusDOESNOTEXIST();
             } else {
                 Result.setStatusOK();
-                Result.setContent(CandidatoManagement.insert(Candidato));
+                Result.setContent(Candidato);
             }
             
-        } catch (BusinessException | PersistenceException ex) {
+        } catch (PersistenceException ex) {
             Result.setContent(ex.getMessage());
             Result.setStatusBADREQUEST();
         } finally {

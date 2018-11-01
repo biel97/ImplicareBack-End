@@ -5,6 +5,12 @@
  */
 package br.cefetmg.implicare.servlet;
 
+import br.cefetmg.implicare.model.domain.Usuario;
+import br.cefetmg.implicare.model.exception.BusinessException;
+import br.cefetmg.implicare.model.exception.PersistenceException;
+import br.cefetmg.implicare.model.service.UsuarioManagement;
+import br.cefetmg.implicare.model.serviceImpl.UsuarioManagementImpl;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -19,30 +25,51 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 public class Login extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+    private Usuario Usuario;
+    private UsuarioManagement UsuarioManagement;
+    private ServletUtil Util;
+    private Gson Gson;
+  
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Result Result = new Result();
+        Util = new ServletUtil();
+        Gson = new Gson();
+        
+        long CPF_CNPJ = Long.parseLong(request.getParameter("CPF_CNPJ"));
+        String Senha = request.getParameter("Senha");
+        
+        try {
             
+            UsuarioManagement = new UsuarioManagementImpl();
+            Usuario = new Usuario();
+            Usuario = UsuarioManagement.login(CPF_CNPJ, Senha);
+            
+            if(Usuario == null) {
+                Result.setStatusDOESNOTEXIST();
+            } else {
+                Result.setStatusOK();
+                Result.setContent(Usuario);
+            }
+            
+        } catch (PersistenceException ex) {
+            Result.setContent(ex.getMessage());
+            Result.setStatusBADREQUEST();
+        } finally {
+            PrintWriter writer = response.getWriter();
+            writer.println(Gson.toJson(Result));
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Login Usuario Empresa ou Candidato";
     }
 
 }

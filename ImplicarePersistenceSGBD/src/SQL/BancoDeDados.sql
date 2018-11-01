@@ -123,7 +123,7 @@ CREATE TABLE Empresa(
 
 -- Add keys for table Empresa
 
-ALTER TABLE Empresa ADD CONSTRAINT Key11 PRIMARY KEY (CPF_CNPJ)
+ALTER TABLE Empresa ADD CONSTRAINT Key11 PRIMARY KEY (CNPJ)
 ;
 
 -- Table Candidato
@@ -137,7 +137,7 @@ CREATE TABLE Candidato(
 
 -- Add keys for table Candidato
 
-ALTER TABLE Candidato ADD CONSTRAINT Key13 PRIMARY KEY (CPF_CNPJ)
+ALTER TABLE Candidato ADD CONSTRAINT Key13 PRIMARY KEY (CPF)
 ;
 
 -- Table Formacao_Academica
@@ -245,10 +245,10 @@ CREATE TABLE Candidato_Vaga(
  CNPJ Bigint NOT NULL,
  Dat_Publicacao Bigint NOT NULL,
  Status_Candidato Character(1) NOT NULL
- CONSTRAINT Check_Status CHECK (Status_Candidato = 'A'::Character(1) OR Status_Candidato = 'R'::Character(1) OR Status_Candidato = 'E'::Character(1))
+ CONSTRAINT Check_Status CHECK (Status_Candidato = 'A'::Character(1) OR Status_Candidato = 'H'::Character(1) OR Status_Candidato = 'R'::Character(1) OR Status_Candidato = 'E'::Character(1))
 )
 ;
-COMMENT ON COLUMN Candidato_Vaga.Status_Candidato IS 'A - Aceito; R - Rejeitado; E - em Espera;'
+COMMENT ON COLUMN Candidato_Vaga.Status_Candidato IS 'A - Aceito; H - Habilitado; R - Rejeitado; E - Espera;'
 ;
 
 -- Add keys for table Candidato_Vaga
