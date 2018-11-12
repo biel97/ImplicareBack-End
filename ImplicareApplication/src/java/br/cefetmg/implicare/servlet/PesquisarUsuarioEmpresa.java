@@ -54,10 +54,10 @@ public class PesquisarUsuarioEmpresa extends HttpServlet {
                 Result.setStatusDOESNOTEXIST();
             } else {
                 Result.setStatusOK();
-                Result.setContent(EmpresaManagement.insert(Empresa));
+                Result.setContent(Empresa);
             }
             
-        } catch (BusinessException | PersistenceException ex) {
+        } catch (PersistenceException ex) {
             Result.setContent(ex.getMessage());
             Result.setStatusBADREQUEST();
         } finally {
