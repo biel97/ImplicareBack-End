@@ -47,7 +47,7 @@ public class ListarAreaEstudo extends HttpServlet {
             ListaAreaEstudo = new ArrayList();
             ListaAreaEstudo = AreaEstudoManagement.listar();
             
-            Result.setStatusOK();
+
             Result.setContent(ListaAreaEstudo);
             
         } catch (PersistenceException ex) {
